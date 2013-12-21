@@ -7,6 +7,7 @@
 //
 
 #import "AttributtorViewController.h"
+#import "TextStatsViewController.h"
 
 @interface AttributtorViewController ()
 @property (weak, nonatomic) IBOutlet UITextView *body;
@@ -16,7 +17,17 @@
 @end
 
 @implementation AttributtorViewController
-
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"Analyze Text"]) {
+       
+        if ([segue.destinationViewController isKindOfClass:[TextStatsViewController class]]) {
+            TextStatsViewController *tsvc = (TextStatsViewController *)segue.destinationViewController;
+            tsvc.textToAnalyze = self.body.textStorage;
+        }
+        
+    }
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -29,6 +40,7 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    [self usePreferredFonts];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(preferredFontsChanged:)
                                                  name:UIContentSizeCategoryDidChangeNotification
@@ -49,6 +61,7 @@
     self.body.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     self.headline.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
 }
+
 - (IBAction)changeBodySelectionColorToMatchBackgroundButton:(UIButton *)sender {
     [self.body.textStorage addAttribute:NSForegroundColorAttributeName value:sender.backgroundColor range:self.body.selectedRange];
 }
